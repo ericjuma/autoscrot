@@ -1,5 +1,11 @@
 import argparse
 import helpers
+import os
+from uuid import uuid4
+
+
+def real_real_path(path):
+    return os.path.realpath(os.path.expanduser(path))
 
 
 def positive_float(n):
@@ -14,12 +20,41 @@ def positive_float(n):
 
 def creatable_file(path):
     """For Argparse: Defines a file that can be created."""
-    pass
+    path = real_real_path(path)
+    parent_dir = os.path.split(path)[0]
+    tempfile = os.path.join(parent_dir, str(uuid4()))
+    try:
+        f = open(tempfile, 'w')
+        os.remove(tempfile)
+        f.close()
+    except (FileNotFoundError, PermissionError) as e:
+        raise argparse.ArgumentTypeError(
+            "Files cannot be created at path {} because:\n{}".format(path, e))
+    return path
 
 
-def record_dir(path):
+def potential_record_dir(path):
+    """For Argparse: Defines a directory that could be used as the record_dir."""
+    path = real_real_path(path)
+    tempfile = os.path.join(path, str(uuid4()))
+    try:
+        f = open(tempfile, 'w')
+        os.remove(tempfile)
+        f.close()
+    except (FileNotFoundError, PermissionError, NotADirectoryError) as e:
+        raise argparse.ArgumentTypeError(
+            "{} cannot be used for a record directory because:\n{}.".format(path, e))
+    return path
+
+
+def used_record_dir(path):
     """For Argparse: Defines a directory that has been used as the record_dir."""
-    pass
+    path = real_real_path(path)
+    try:
+        assert('autoscrot.0.png' in os.listdir(path))
+    except AssertionError:
+        raise argparse.ArgumentTypeError("{} is not a used record directory".format(path))
+    return path
 
 
 def record(args):
@@ -51,6 +86,7 @@ record_subparser.add_argument(
     help='Speed multiplier for recording. Will be the speed at which the video is played.')
 record_subparser.add_argument(
     '--record_dir',
+    type=potential_record_dir,
     default='~/.autoscrot',
     help='Path to recording directory to record in')
 record_subparser.set_defaults(func=record)
@@ -60,10 +96,12 @@ export_subparser = subparsers.add_parser(
     help='Export recorded data to video file.')
 export_subparser.add_argument(
     'output_file',
+    type=creatable_file,
     default='output.mp4',
     help='Output file path')
 export_subparser.add_argument(
     '--record_dir',
+    type=potential_record_dir,
     default='~/.autoscrot',
     help='Path to recording directory to export from')
 export_subparser.set_defaults(func=export)
@@ -74,6 +112,7 @@ status_subparser = subparsers.add_parser(
     help='Get info on the recorded data.')
 status_subparser.add_argument(
     '--record_dir',
+    type=used_record_dir,
     default='~/.autoscrot',
     help='Path to recording directory to get info on')
 status_subparser.set_defaults(func=status)
@@ -83,9 +122,14 @@ clear_subparser = subparsers.add_parser(
     help='Clear recording data when done with it (does not clear exported video)')
 clear_subparser.add_argument(
     '--record_dir',
+    type=used_record_dir,
     default='~/.autoscrot',
     help='Path to recording directory to clear of recorded data')
 clear_subparser.set_defaults(func=clear)
 
 args = parser.parse_args()
-args.func(args)
+
+try:
+    args.func(args)
+except AttributeError:
+    parser.print_help()
