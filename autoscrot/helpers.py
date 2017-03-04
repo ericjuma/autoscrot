@@ -1,17 +1,17 @@
 import os
 
 
-def record(delay=1.0, quality=1.0):
-    pass
+def record(record_dir='~/.autoscrot', speed=1.0):
+    print(locals())
 
 
-def export(file_path='~/', playback_rate=1.0, fps=60):
-    pass
+def export(record_dir='~/.autoscrot', output_file='output.mp4'):
+    print(locals())
 
 
-def clear():
-    pass
+def status(record_dir='~/.autoscrot'):
+    print(locals())
 
 
-def status():
-    pass
+def clear(record_dir='~/.autoscrot'):
+    print(locals())
