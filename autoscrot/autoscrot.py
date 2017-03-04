@@ -22,13 +22,19 @@ def positive_float(n):
 def creatable_file(path):
     """For Argparse: Defines a file that can be created."""
     path = real_real_path(path)
-    parent_dir = os.path.split(path)[0]
-    tempfile = os.path.join(parent_dir, str(uuid4()))
+    split_dir = os.path.split(path)
+    tempfile = os.path.join(split_dir[0], str(uuid4()))
+    try:
+        assert(not os.path.isdir(path))
+        assert(not os.path.isfile(path))
+    except (AssertionError) as e:
+        raise argparse.ArgumentTypeError(
+            "File {} cannot be created because {} already exists".format(path, path))
     try:
         f = open(tempfile, 'w')
         os.remove(tempfile)
         f.close()
-    except (FileNotFoundError, PermissionError) as e:
+    except (AssertionError, FileNotFoundError, PermissionError) as e:
         raise argparse.ArgumentTypeError(
             "Files cannot be created at path {} because:\n{}".format(path, e))
     return path
