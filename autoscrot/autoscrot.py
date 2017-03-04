@@ -34,7 +34,7 @@ def creatable_file(path):
         f = open(tempfile, 'w')
         os.remove(tempfile)
         f.close()
-    except (AssertionError, FileNotFoundError, PermissionError) as e:
+    except (FileNotFoundError, PermissionError) as e:
         raise argparse.ArgumentTypeError(
             "Files cannot be created at path {} because:\n{}".format(path, e))
     return path
