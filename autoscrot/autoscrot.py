@@ -84,70 +84,75 @@ def status(args):
     helpers.status(record_dir=args.record_dir)
 
 
-# Create arg parser
-parser = argparse.ArgumentParser()
-subparsers = parser.add_subparsers()
+def main():
+    # Create arg parser
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers()
 
-# Create subparser for record subcommand
-record_subparser = subparsers.add_parser(
-    'record',
-    help='Record screenshots to be exported. Appends to previous recordings.')
-record_subparser.add_argument(
-    'speed',
-    type=positive_float,
-    default=60,
-    help='Speed multiplier for recording. Will be the speed at which the video is played.')
-record_subparser.add_argument(
-    '--record_dir',
-    type=potential_record_dir,
-    default='~/.autoscrot',
-    help='Path to recording directory to record in')
-record_subparser.set_defaults(func=record)
+    # Create subparser for record subcommand
+    record_subparser = subparsers.add_parser(
+        'record',
+        help='Record screenshots to be exported. Appends to previous recordings.')
+    record_subparser.add_argument(
+        'speed',
+        type=positive_float,
+        default=60,
+        help='Speed multiplier for recording. Will be the speed at which the video is played.')
+    record_subparser.add_argument(
+        '--record_dir',
+        type=potential_record_dir,
+        default='~/.autoscrot',
+        help='Path to recording directory to record in')
+    record_subparser.set_defaults(func=record)
 
-# Create subparser for export subcommand
-export_subparser = subparsers.add_parser(
-    'export',
-    help='Export recorded data to video file.')
-export_subparser.add_argument(
-    'output_file',
-    type=creatable_file,
-    default='output.mp4',
-    help='Output file path')
-export_subparser.add_argument(
-    '--record_dir',
-    type=potential_record_dir,
-    default='~/.autoscrot',
-    help='Path to recording directory to export from')
-export_subparser.set_defaults(func=export)
+    # Create subparser for export subcommand
+    export_subparser = subparsers.add_parser(
+        'export',
+        help='Export recorded data to video file.')
+    export_subparser.add_argument(
+        'output_file',
+        type=creatable_file,
+        default='output.mp4',
+        help='Output file path')
+    export_subparser.add_argument(
+        '--record_dir',
+        type=potential_record_dir,
+        default='~/.autoscrot',
+        help='Path to recording directory to export from')
+    export_subparser.set_defaults(func=export)
 
-# Create subparser for status subcommand
-status_subparser = subparsers.add_parser(
-    'status',
-    help='Get info on the recorded data.')
-status_subparser.add_argument(
-    '--record_dir',
-    type=used_record_dir,
-    default='~/.autoscrot',
-    help='Path to recording directory to get info on')
-status_subparser.set_defaults(func=status)
+    # Create subparser for status subcommand
+    status_subparser = subparsers.add_parser(
+        'status',
+        help='Get info on the recorded data.')
+    status_subparser.add_argument(
+        '--record_dir',
+        type=used_record_dir,
+        default='~/.autoscrot',
+        help='Path to recording directory to get info on')
+    status_subparser.set_defaults(func=status)
 
-# Create subparser for clear subcommand
-clear_subparser = subparsers.add_parser(
-    'clear',
-    help='Clear recording data when done with it (does not clear exported video)')
-clear_subparser.add_argument(
-    '--record_dir',
-    type=used_record_dir,
-    default='~/.autoscrot',
-    help='Path to recording directory to clear of recorded data')
-clear_subparser.set_defaults(func=clear)
+    # Create subparser for clear subcommand
+    clear_subparser = subparsers.add_parser(
+        'clear',
+        help='Clear recording data when done with it (does not clear exported video)')
+    clear_subparser.add_argument(
+        '--record_dir',
+        type=used_record_dir,
+        default='~/.autoscrot',
+        help='Path to recording directory to clear of recorded data')
+    clear_subparser.set_defaults(func=clear)
 
-# Parse args
-args = parser.parse_args()
+    # Parse args
+    args = parser.parse_args()
 
-# Call corresponding function to the subcommand that was chosen.
-# AttributeError was being thrown when no subcommand was chosen so in this case print help.
-try:
-    args.func(args)
-except AttributeError:
-    parser.print_help()
+    # Call corresponding function to the subcommand that was chosen.
+    # AttributeError was being thrown when no subcommand was chosen so in this case print help.
+    try:
+        args.func(args)
+    except AttributeError:
+        parser.print_help()
+
+
+if __name__ == '__main__':
+    main()
