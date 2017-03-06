@@ -1,4 +1,5 @@
 import os
+import tqdm
 
 
 def record(record_dir='~/.autoscrot', speed=1.0):
@@ -14,4 +15,6 @@ def status(record_dir='~/.autoscrot'):
 
 
 def clear(record_dir='~/.autoscrot'):
-    print(locals())
+    for filename in tqdm(os.listdir(record_dir)):
+        if filename[:10] == 'autoscrot.' and filename[-4:] == '.png':
+            os.remove(filename)
