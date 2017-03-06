@@ -4,11 +4,6 @@ import helpers
 import os
 
 
-def real_real_path(path):
-    """Takes a path and returns the absolute path using expanduser and realpath"""
-    return os.path.realpath(os.path.expanduser(path))
-
-
 def positive_float(n):
     """For Argparse: Defines a postiive float"""
     try:
@@ -21,7 +16,7 @@ def positive_float(n):
 
 def creatable_file(path):
     """For Argparse: Defines a file that can be created."""
-    path = real_real_path(path)
+    path = helpers.real_real_path(path)
     split_dir = os.path.split(path)
     tempfile = os.path.join(split_dir[0], str(uuid4()))
     try:
@@ -42,7 +37,7 @@ def creatable_file(path):
 
 def potential_record_dir(path):
     """For Argparse: Defines a directory that could be used as the record_dir."""
-    path = real_real_path(path)
+    path = helpers.real_real_path(path)
     tempfile = os.path.join(path, str(uuid4()))
     try:
         f = open(tempfile, 'w')
@@ -56,7 +51,7 @@ def potential_record_dir(path):
 
 def used_record_dir(path):
     """For Argparse: Defines a directory that has been used as the record_dir."""
-    path = real_real_path(path)
+    path = helpers.real_real_path(path)
     try:
         assert('autoscrot.0.png' in os.listdir(path))
     except AssertionError:
@@ -127,7 +122,7 @@ def main():
         help='Get info on the recorded data.')
     status_subparser.add_argument(
         '--record_dir',
-        type=used_record_dir,
+        type=potential_record_dir,
         default='~/.autoscrot',
         help='Path to recording directory to get info on')
     status_subparser.set_defaults(func=status)

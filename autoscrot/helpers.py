@@ -1,5 +1,11 @@
 import os
-import tqdm
+from tqdm import tqdm
+from glob import glob
+
+
+def real_real_path(path):
+    """Takes a path and returns the absolute path using expanduser and realpath"""
+    return os.path.realpath(os.path.expanduser(path))
 
 
 def record(record_dir='~/.autoscrot', speed=1.0):
@@ -11,10 +17,13 @@ def export(record_dir='~/.autoscrot', output_file='output.mp4'):
 
 
 def status(record_dir='~/.autoscrot'):
-    print(locals())
+    record_dir = real_real_path(record_dir)
+    scrots = glob(os.path.join(record_dir, "autoscrot.*.png"))
+    print("{} autoscrot files in recording directory {}".format(len(scrots), record_dir))
 
 
 def clear(record_dir='~/.autoscrot'):
-    for filename in tqdm(os.listdir(record_dir)):
-        if filename[:10] == 'autoscrot.' and filename[-4:] == '.png':
-            os.remove(filename)
+    record_dir = real_real_path(record_dir)
+    scrots = glob(os.path.join(record_dir, "autoscrot.*.png"))
+    for f in tqdm(scrots):
+        os.remove(f)
