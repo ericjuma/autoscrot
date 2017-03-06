@@ -16,7 +16,7 @@ def positive_float(n):
 
 def creatable_file(path):
     """For Argparse: Defines a file that can be created."""
-    path = helpers.real_real_path(path)
+    path = helpers.expand_path(path)
     split_dir = os.path.split(path)
     tempfile = os.path.join(split_dir[0], str(uuid4()))
     try:
@@ -37,7 +37,7 @@ def creatable_file(path):
 
 def potential_record_dir(path):
     """For Argparse: Defines a directory that could be used as the record_dir."""
-    path = helpers.real_real_path(path)
+    path = helpers.expand_path(path)
     tempfile = os.path.join(path, str(uuid4()))
     try:
         f = open(tempfile, 'w')
@@ -51,7 +51,7 @@ def potential_record_dir(path):
 
 def used_record_dir(path):
     """For Argparse: Defines a directory that has been used as the record_dir."""
-    path = helpers.real_real_path(path)
+    path = helpers.expand_path(path)
     try:
         assert('autoscrot.0.png' in os.listdir(path))
     except AssertionError:
