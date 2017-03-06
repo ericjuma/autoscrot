@@ -3,7 +3,7 @@ from tqdm import tqdm
 from glob import glob
 
 
-def real_real_path(path):
+def expand_path(path):
     """Takes a path and returns the absolute path using expanduser and realpath"""
     return os.path.realpath(os.path.expanduser(path))
 
