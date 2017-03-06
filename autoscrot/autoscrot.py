@@ -2,10 +2,11 @@ from uuid import uuid4
 import argparse
 import helpers
 import os
+from glob import glob
 
 
 def positive_float(n):
-    """For Argparse: Defines a postiive float"""
+    """For Argparse: Defines a positive float"""
     try:
         n = float(n)
         assert(n > 0)
@@ -53,29 +54,29 @@ def used_record_dir(path):
     """For Argparse: Defines a directory that has been used as the record_dir."""
     path = helpers.expand_path(path)
     try:
-        assert('autoscrot.0.png' in os.listdir(path))
+        assert(glob(os.path.join(path, 'autoscrot.*.png')))
     except AssertionError:
         raise argparse.ArgumentTypeError("{} is not a used record directory".format(path))
     return path
 
 
 def record(args):
-    """Called by argparse to run helper function with arguments from args namespace"""
+    """Called by argparse to run helper function with clargs"""
     helpers.record(record_dir=args.record_dir, speed=args.speed)
 
 
 def export(args):
-    """Called by argparse to run helper function with arguments from args namespace"""
+    """Called by argparse to run helper function with clargs"""
     helpers.export(record_dir=args.record_dir, output_file=args.output_file)
 
 
 def clear(args):
-    """Called by argparse to run helper function with arguments from args namespace"""
+    """Called by argparse to run helper function with clargs"""
     helpers.clear(record_dir=args.record_dir)
 
 
 def status(args):
-    """Called by argparse to run helper function with arguments from args namespace"""
+    """Called by argparse to run helper function with clargs"""
     helpers.status(record_dir=args.record_dir)
 
 
