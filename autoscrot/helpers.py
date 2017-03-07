@@ -32,7 +32,9 @@ def record(record_dir="~/.autoscrot", speed=60):
                     os.remove(oneback_path)
                     scrotnum -= 1
 
-        os.system(b"screencapture -Cmx " + scrot_file_path(record_dir, scrotnum))
+        scrot_path = scrot_file_path(record_dir, scrotnum)
+        print(scrot_path)
+        os.system(b"screencapture -Cmx " + scrot_path)
         time.sleep(speed / 30)
         scrotnum += 1
 
