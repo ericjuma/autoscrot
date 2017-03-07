@@ -27,7 +27,7 @@ def creatable_file(path):
         raise argparse.ArgumentTypeError(
             "File {} cannot be created because {} already exists".format(path, path))
     try:
-        f = open(tempfile, 'w')
+        f = open(tempfile, "w")
         os.remove(tempfile)
         f.close()
     except (FileNotFoundError, PermissionError) as e:
@@ -41,7 +41,7 @@ def potential_record_dir(path):
     path = helpers.expand_path(path)
     tempfile = os.path.join(path, str(uuid4()))
     try:
-        f = open(tempfile, 'w')
+        f = open(tempfile, "w")
         os.remove(tempfile)
         f.close()
     except (FileNotFoundError, PermissionError, NotADirectoryError) as e:
@@ -54,7 +54,7 @@ def used_record_dir(path):
     """For Argparse: Defines a directory that has been used as the record_dir."""
     path = helpers.expand_path(path)
     try:
-        assert(glob(os.path.join(path, 'autoscrot.*.png')))
+        assert(glob(os.path.join(path, b"autoscrot.*.png")))
     except AssertionError:
         raise argparse.ArgumentTypeError("{} is not a used record directory".format(path))
     return path
@@ -87,56 +87,56 @@ def main():
 
     # Create subparser for record subcommand
     record_subparser = subparsers.add_parser(
-        'record',
-        help='Record screenshots to be exported. Appends to previous recordings.')
+        "record",
+        help="Record screenshots to be exported. Appends to previous recordings.")
     record_subparser.add_argument(
-        'speed',
+        "speed",
         type=positive_float,
         default=60,
-        help='Speed multiplier for recording. Will be the speed at which the video is played.')
+        help="Speed multiplier for recording. Will be the speed at which the video is played.")
     record_subparser.add_argument(
-        '--record_dir',
+        "--record_dir",
         type=potential_record_dir,
-        default='~/.autoscrot',
-        help='Path to recording directory to record in')
+        default="~/.autoscrot",
+        help="Path to recording directory to record in")
     record_subparser.set_defaults(func=record)
 
     # Create subparser for export subcommand
     export_subparser = subparsers.add_parser(
-        'export',
-        help='Export recorded data to video file.')
+        "export",
+        help="Export recorded data to video file.")
     export_subparser.add_argument(
-        'output_file',
+        "output_file",
         type=creatable_file,
-        default='output.mp4',
-        help='Output file path')
+        default="output.mp4",
+        help="Output file path")
     export_subparser.add_argument(
-        '--record_dir',
+        "--record_dir",
         type=potential_record_dir,
-        default='~/.autoscrot',
-        help='Path to recording directory to export from')
+        default="~/.autoscrot",
+        help="Path to recording directory to export from")
     export_subparser.set_defaults(func=export)
 
     # Create subparser for status subcommand
     status_subparser = subparsers.add_parser(
-        'status',
-        help='Get info on the recorded data.')
+        "status",
+        help="Get info on the recorded data.")
     status_subparser.add_argument(
-        '--record_dir',
+        "--record_dir",
         type=potential_record_dir,
-        default='~/.autoscrot',
-        help='Path to recording directory to get info on')
+        default="~/.autoscrot",
+        help="Path to recording directory to get info on")
     status_subparser.set_defaults(func=status)
 
     # Create subparser for clear subcommand
     clear_subparser = subparsers.add_parser(
-        'clear',
-        help='Clear recording data when done with it (does not clear exported video)')
+        "clear",
+        help="Clear recording data when done with it (does not clear exported video)")
     clear_subparser.add_argument(
-        '--record_dir',
+        "--record_dir",
         type=used_record_dir,
-        default='~/.autoscrot',
-        help='Path to recording directory to clear of recorded data')
+        default="~/.autoscrot",
+        help="Path to recording directory to clear of recorded data")
     clear_subparser.set_defaults(func=clear)
 
     # Parse args
@@ -144,11 +144,12 @@ def main():
 
     # Call corresponding function to the subcommand that was chosen.
     # AttributeError was being thrown when no subcommand was chosen so in this case print help.
-    try:
-        args.func(args)
-    except AttributeError:
-        parser.print_help()
+    # try:
+    #     args.func(args)
+    # except AttributeError:
+    #     parser.print_help()
+    args.func(args)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
